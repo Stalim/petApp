@@ -10,7 +10,7 @@ import SignUp from './src/components/Login/SignUp';
 export default class PetApp extends Component {
   render(){
     return(
-      <Login />
+      <SignUp />
     );
   }
 }
