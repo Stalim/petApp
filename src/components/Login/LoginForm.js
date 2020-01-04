@@ -1,10 +1,22 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, TextInput, Text, TouchableOpacity } from 'react-native';
+import {StyleSheet, View, TextInput, Text, Image, KeyboardAvoidingView, TouchableOpacity, StatusBar } from 'react-native';
 
 export default class LoginForm extends Component {
   render() {
     return (
-      <View style={styles.container}>
+
+      <KeyboardAvoidingView behavior="padding" style={styles.container}>
+      <StatusBar barStyle="dark-content"/>
+
+        <View style={styles.logoContainer}>
+          <Image
+          style={styles.logo}
+          source={require('../../.././Images/paw_logo.jpg')}
+          />
+          <Text style={styles.title}>No Humans Allowed</Text>
+        </View>
+
+
         <TextInput
           style={styles.input}
           placeholder="Username or email"
@@ -14,7 +26,6 @@ export default class LoginForm extends Component {
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="next"
-
         />
 
         <TextInput
@@ -30,19 +41,18 @@ export default class LoginForm extends Component {
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
-        <Text style={styles.signUpText}>New user?
-          <Text>    Register Now
-          </Text>
-        </Text>
+        <TouchableOpacity onPress={() => this.props.navigation.navigate('SignUpForm')}>
+          <Text style={styles.signUpText}>New user? Register now</Text>
+          </TouchableOpacity>
 
-
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     marginBottom: 160,
     paddingHorizontal:50,
     alignItems: 'center',
@@ -74,10 +84,22 @@ const styles = StyleSheet.create({
     textAlign:'center',
     color:'white'
   },
+
   signUpText:{
       paddingVertical: 15,
       color: 'blue',
+  },
 
+  logo: {
+    width: 140,
+    height:140
+  },
 
-  }
+  logoContainer: {
+    alignItems: 'center',
+    flexGrow: 1,
+    justifyContent:'center',
+    marginTop: 30
+
+  },
 });

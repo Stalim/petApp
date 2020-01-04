@@ -5,12 +5,15 @@ import {
   View,
   Button } from 'react-native';
 
-import Login from './src/components/Login/Login';
-import SignUp from './src/components/Login/SignUp';
+import SignUpForm from './src/components/Login/SignUpForm';
+import LoginForm from './src/components/Login/LoginForm';
+import ImagePicker from './src/components/Login/ImagePicker';
+import AppNavigator from './src/navigation/AppNavigator';
+
 export default class PetApp extends Component {
   render(){
     return(
-      <Login />
+      <AppNavigator/>
     );
   }
 }
