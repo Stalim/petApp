@@ -1,14 +1,9 @@
 import React, { Component } from 'react';
-import {
-  StyleSheet,
-  Text,
-  View,
-  Button } from 'react-native';
+import {StyleSheet, Text, View, Button, ActivityIndicator, StatusBar, AsyncStorage  } from 'react-native';
 
-import SignUpForm from './src/components/Login/SignUpForm';
-import LoginForm from './src/components/Login/LoginForm';
-import ImagePicker from './src/components/Login/ImagePicker';
 import AppNavigator from './src/navigation/AppNavigator';
+
+
 
 export default class PetApp extends Component {
   render(){
@@ -17,6 +12,8 @@ export default class PetApp extends Component {
     );
   }
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

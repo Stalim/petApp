@@ -1,7 +1,19 @@
 import React, { Component } from 'react';
-import {StyleSheet, View, TextInput, Text, Image, KeyboardAvoidingView, TouchableOpacity, StatusBar } from 'react-native';
+import {StyleSheet, AsyncStorage, View, Alert,TextInput, Text, Image, KeyboardAvoidingView, TouchableOpacity, StatusBar } from 'react-native';
+
+const userInfo = {username:'admin', password:'lola'}
 
 export default class LoginForm extends Component {
+
+constructor(props){
+  super(props);
+  this.state = {
+    username:'',
+    password:''
+  }
+}
+
+
   render() {
     return (
 
@@ -16,7 +28,6 @@ export default class LoginForm extends Component {
           <Text style={styles.title}>No Humans Allowed</Text>
         </View>
 
-
         <TextInput
           style={styles.input}
           placeholder="Username or email"
@@ -26,6 +37,9 @@ export default class LoginForm extends Component {
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="next"
+          onChangeText={(username) => this.setState({username})}
+          value={this.state.username}
+          autoCapitalize="none"
         />
 
         <TextInput
@@ -35,9 +49,14 @@ export default class LoginForm extends Component {
           placeholderTextColor='gray'
           returnKeyType="go"
           ref={(input) => this.passwordInput = input}
+          onChangeText={(password) => this.setState({password})}
+          value={this.state.password}
         />
 
-        <TouchableOpacity style={styles.buttonContainer}>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress = {this._login}
+        >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
 
@@ -48,6 +67,18 @@ export default class LoginForm extends Component {
       </KeyboardAvoidingView>
     );
   }
+
+  _login = async() => {
+    if(userInfo.username === this.state.username && userInfo.password === this.state.password){
+      await AsyncStorage.setItem('isLoggedIn', '1');
+      this.props.navigation.navigate('Main');
+    }
+    else {
+      alert('Incorrect Password ');
+    }
+
+  }
+
 }
 
 const styles = StyleSheet.create({
