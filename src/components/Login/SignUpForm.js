@@ -1,15 +1,50 @@
 import React, { Component } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-
 import {StyleSheet, View, Image, TextInput, Text, TouchableOpacity, Picker,KeyboardAvoidingView } from 'react-native';
 import ImagePicker from './ImagePicker';
-
 import RadioGroup from 'react-native-radio-buttons-group';
-import NumericInput from 'react-native-numeric-input'
+import NumericInput from 'react-native-numeric-input';
+import * as firebase from "firebase";
+
+
+  var config = {
+    apiKey: "AIzaSyCICFM-viU7aEhZoTVAzjF_nTlKLL5gMYA",
+    authDomain: "petapp-8e90b.firebaseapp.com",
+    databaseURL: "https://petapp-8e90b.firebaseio.com",
+    projectId: "petapp-8e90b",
+    storageBucket: "petapp-8e90b.appspot.com",
+    messagingSenderId: "1043247261213",
+    appId: "1:1043247261213:web:66dad83fee99021d7f88f4"
+  };
+
+  if (!firebase.apps.length) {
+      firebase.initializeApp(config);
+  }
 
 export default class SignUpForm extends Component {
+  constructor(props) {
+ super(props);
+ this.state = {
+   email: "",
+   password: ""
+ };
+}
 
-  state = {
+SignUp = (email, password) => {
+   try {
+     firebase
+         .auth()
+         .createUserWithEmailAndPassword(email, password)
+         .then(user => {
+                console.log(user);
+                this.props.navigation.navigate('AuthLoading');
+          });
+} catch (error) {
+     console.log(error.toString(error));
+   }
+ };
+
+  stateOne = {
        gender: [
            {
                label: 'Male',
@@ -39,11 +74,11 @@ export default class SignUpForm extends Component {
 
   render() {
 
-    let selectedButton = this.state.gender.find(e => e.selected == true);
-    selectedButton = selectedButton ? selectedButton.value : this.state.gender[0].label;
+    let selectedButton = this.stateOne.gender.find(e => e.selected == true);
+    selectedButton = selectedButton ? selectedButton.value : this.stateOne.gender[0].label;
 
-    let selectedButton_1 = this.state.type.find(e => e.selected == true);
-    selectedButton_1 = selectedButton_1 ? selectedButton_1.value : this.state.type[0].label;
+    let selectedButton_1 = this.stateOne.type.find(e => e.selected == true);
+    selectedButton_1 = selectedButton_1 ? selectedButton_1.value : this.stateOne.type[0].label;
 
     return (
     <KeyboardAvoidingView behavior='position' enable style={styles.container}>
@@ -67,7 +102,7 @@ export default class SignUpForm extends Component {
           <Text style={styles.valueText}>
               Gender
           </Text>
-          <RadioGroup radioButtons={this.state.gender} onPress={this.onPress} flexDirection='row'
+          <RadioGroup radioButtons={this.stateOne.gender} onPress={this.onPress} flexDirection='row'
           />
         </View>
 
@@ -75,7 +110,7 @@ export default class SignUpForm extends Component {
           <Text style={styles.valueText_type} >
               Animal
           </Text>
-          <RadioGroup radioButtons={this.state.type} onPress={this.onPress} flexDirection='row'
+          <RadioGroup radioButtons={this.stateOne.type} onPress={this.onPress} flexDirection='row'
           />
         </View>
 
@@ -152,6 +187,7 @@ export default class SignUpForm extends Component {
             Email
           </Text>
           <TextInput
+            onChangeText={email => this.setState({ email })}
             style={{ height: 40, width:250, borderColor: 'gray', borderBottomWidth: 1 }} placeholder="   email"
           />
         </View>
@@ -161,12 +197,15 @@ export default class SignUpForm extends Component {
             Password
           </Text>
           <TextInput
+            onChangeText={password => this.setState({ password })}
             style={{ height: 40, width:250, borderColor: 'gray', borderBottomWidth: 1 }} placeholder="   password"
           />
         </View>
 
         <View style={{alignItems:'center'}}>
-          <TouchableOpacity style={styles.buttonContainer}>
+          <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={() => this.SignUp(this.state.email, this.state.password)}>
             <Text style={styles.buttonText}>Submit</Text>
           </TouchableOpacity>
         </View>

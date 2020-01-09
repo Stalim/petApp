@@ -1,17 +1,46 @@
 import React, { Component } from 'react';
 import {StyleSheet, AsyncStorage, View, Alert,TextInput, Text, Image, KeyboardAvoidingView, TouchableOpacity, StatusBar } from 'react-native';
+{/*const userInfo = {username:'admin', password:'lola'}*/}
+import * as firebase from "firebase";
 
-const userInfo = {username:'admin', password:'lola'}
+
+  var config = {
+    apiKey: "AIzaSyCICFM-viU7aEhZoTVAzjF_nTlKLL5gMYA",
+    authDomain: "petapp-8e90b.firebaseapp.com",
+    databaseURL: "https://petapp-8e90b.firebaseio.com",
+    projectId: "petapp-8e90b",
+    storageBucket: "petapp-8e90b.appspot.com",
+    messagingSenderId: "1043247261213",
+    appId: "1:1043247261213:web:66dad83fee99021d7f88f4"
+  };
+
+  if (!firebase.apps.length) {
+      firebase.initializeApp(config);
+  }
 
 export default class LoginForm extends Component {
 
 constructor(props){
   super(props);
   this.state = {
-    username:'',
+    email:'',
     password:''
-  }
+  };
 }
+LogIn = (email, password) => {
+    try {
+      firebase
+         .auth()
+         .signInWithEmailAndPassword(email, password)
+         .then(res => {
+             console.log(res.user.email);
+             AsyncStorage.setItem('isLoggedIn', '1');
+             this.props.navigation.navigate('Main');
+      });
+} catch (err) {
+      console.error();("hello bitch")
+    }
+  };
 
 
   render() {
@@ -32,12 +61,12 @@ constructor(props){
           style={styles.input}
           placeholder="Username or email"
           placeholderTextColor='gray'
-          onSubmitEditing={() => this.passwordInput.focus()}
+
           keyboardType="email-address"
           autoCapitalize="none"
           autoCorrect={false}
           returnKeyType="next"
-          onChangeText={(username) => this.setState({username})}
+          onChangeText={email => this.setState({ email })}
           value={this.state.username}
           autoCapitalize="none"
         />
@@ -48,18 +77,17 @@ constructor(props){
           secureTextEntry
           placeholderTextColor='gray'
           returnKeyType="go"
-          ref={(input) => this.passwordInput = input}
-          onChangeText={(password) => this.setState({password})}
+          onChangeText={password => this.setState({ password })}
           value={this.state.password}
         />
-
+        <View>
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress = {this._login}
+          onPress={() => this.LogIn(this.state.email, this.state.password)}
         >
           <Text style={styles.buttonText}>Login</Text>
         </TouchableOpacity>
-
+        </View>
         <TouchableOpacity onPress={() => this.props.navigation.navigate('SignUpForm')}>
           <Text style={styles.signUpText}>New user? Register now</Text>
           </TouchableOpacity>
@@ -68,16 +96,6 @@ constructor(props){
     );
   }
 
-  _login = async() => {
-    if(userInfo.username === this.state.username && userInfo.password === this.state.password){
-      await AsyncStorage.setItem('isLoggedIn', '1');
-      this.props.navigation.navigate('Main');
-    }
-    else {
-      alert('Incorrect Password ');
-    }
-
-  }
 
 }
 
