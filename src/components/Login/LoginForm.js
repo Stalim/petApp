@@ -38,7 +38,7 @@ LogIn = (email, password) => {
              this.props.navigation.navigate('Main');
       });
 } catch (err) {
-      console.error();("hello bitch")
+      console.error();
     }
   };
 
@@ -59,7 +59,7 @@ LogIn = (email, password) => {
 
         <TextInput
           style={styles.input}
-          placeholder="Username or email"
+          placeholder="Email"
           placeholderTextColor='gray'
 
           keyboardType="email-address"

@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import RNPickerSelect from 'react-native-picker-select';
-import {StyleSheet, View, Image, TextInput, Text, TouchableOpacity, Picker,KeyboardAvoidingView } from 'react-native';
-import ImagePicker from './ImagePicker';
+import {StyleSheet, View, Button, Image, TextInput, Text, TouchableOpacity, Picker,KeyboardAvoidingView } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import NumericInput from 'react-native-numeric-input';
 import * as firebase from "firebase";
+import * as ImagePicker from 'expo-image-picker';
+import Constants from 'expo-constants';
+import * as Permissions from 'expo-permissions';
 
 
   var config = {
@@ -22,11 +24,15 @@ import * as firebase from "firebase";
   }
 
 export default class SignUpForm extends Component {
-  constructor(props) {
+constructor(props) {
  super(props);
  this.state = {
    email: "",
-   password: ""
+   password: "",
+   name:"",
+   bio:"",
+   age:"",
+   image:null,
  };
 }
 
@@ -37,7 +43,10 @@ SignUp = (email, password) => {
          .createUserWithEmailAndPassword(email, password)
          .then(user => {
                 console.log(user);
-                this.props.navigation.navigate('AuthLoading');
+                this.props.navigation.navigate('Profile', { name: this.state.name,
+                                                            image: this.state.image,
+                                                            bio: this.state.bio,
+                                                            age: this.state.age});
           });
 } catch (error) {
      console.log(error.toString(error));
@@ -73,6 +82,7 @@ SignUp = (email, password) => {
    onPress = type => this.setState({ type });
 
   render() {
+    let { image } = this.state;
 
     let selectedButton = this.stateOne.gender.find(e => e.selected == true);
     selectedButton = selectedButton ? selectedButton.value : this.stateOne.gender[0].label;
@@ -90,7 +100,13 @@ SignUp = (email, password) => {
       <View style={{ flex:3, justifyContent:'space-evenly'}}>
 
         <View style={styles.formContainer}>
-          <ImagePicker/>
+        {image &&
+          <Image source={{ uri: image }} style={{ width: 90, height: 90, borderRadius:45 }} />}
+
+        <Button
+          title="Select Profile Picture"
+          onPress={this._pickImage}
+        />
         </View>
 
         {/*<View style={{alignItems:'center'}}>
@@ -121,7 +137,7 @@ SignUp = (email, password) => {
           <View style={styles.container_num}>
             <NumericInput
               value={this.state.value}
-              onChange={value => this.setState({value})}
+              onChange={age => this.setState({age})}
               onLimitReached={(isMax,msg) => console.log(isMax,msg)}
               totalWidth={120}
               totalHeight={28}
@@ -169,7 +185,9 @@ SignUp = (email, password) => {
               Name
           </Text>
           <TextInput
-            style={{ height: 40, width:150, borderColor: 'gray', borderBottomWidth: 1, }} placeholder="  pet's name"
+            style={{ height: 40, width:150, borderColor: 'gray', borderBottomWidth: 1, }}
+            placeholder="  pet's name"
+            onChangeText={name => this.setState({ name })}
           />
         </View>
 
@@ -178,7 +196,9 @@ SignUp = (email, password) => {
             Biography
           </Text>
           <TextInput
-            style={{ height: 40, width:250, borderColor: 'gray', borderBottomWidth: 1 }} placeholder="  small description "
+            style={{ height: 40, width:250, borderColor: 'gray', borderBottomWidth: 1 }}
+            placeholder="  small description "
+            onChangeText={bio => this.setState({ bio })}
           />
         </View>
 
@@ -217,6 +237,34 @@ SignUp = (email, password) => {
 
     );
   }
+  componentDidMount() {
+  this.getPermissionAsync();
+  console.log('hi');
+}
+
+getPermissionAsync = async () => {
+  if (Constants.platform.ios) {
+    const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+    if (status !== 'granted') {
+      alert('Sorry, we need camera roll permissions to make this work!');
+    }
+  }
+}
+
+_pickImage = async () => {
+  let result = await ImagePicker.launchImageLibraryAsync({
+    mediaTypes: ImagePicker.MediaTypeOptions.All,
+    allowsEditing: true,
+    aspect: [4, 3],
+    quality: 1
+  });
+
+  console.log(result);
+
+  if (!result.cancelled) {
+    this.setState({ image: result.uri });
+  }
+};
 }
 
 const styles = StyleSheet.create({

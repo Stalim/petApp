@@ -11,14 +11,14 @@ export default class ProfileTab extends Component {
 
         {/*Profile picture, Name, and Bio View Compartment*/}
         <View style={{flex:1,  backgroundColor: 'white', width:'100%' }}>
-          <View style={{flexDirection:'row'}}>
+          <View style={{flexDirection:'row', justifyContent:'space-around'}}>
                             {/*PROFILE PICTURE*/}
-            <Image style={styles.logo} source={require('../../.././Images/cat.gif')}/>
+            <Image source={{ uri: this.props.navigation.state.params.image }} style={{ width: 90, height: 90, borderRadius:25, marginTop: 36, marginLeft:10 }} />
             <View style={{flexDirection:'column', marginTop: 40, justifyContent:'space-around', width:'69%'}}>
                               {/*NAME*/}
-              <Text style={{fontSize: 28, textDecorationLine:'underline'}}>Pet Name </Text>
+              <Text style={{fontSize: 28, textDecorationLine:'underline'}}>{this.props.navigation.state.params.name}</Text>
                               {/*BIO*/}
-              <Text>Brief description of pet like personality, activities, skills , etc ...   </Text>
+              <Text>{this.props.navigation.state.params.bio}</Text>
             </View>
           </View>
         </View>
@@ -29,7 +29,7 @@ export default class ProfileTab extends Component {
                         {/*AGE*/}
           <View style={{ flexDirection: 'column'}}>
             <Text style={{fontSize: 18}}>Age</Text>
-            <Text style={{textAlign:'center'}}>12</Text>
+            <Text style={{textAlign:'center'}}>{this.props.navigation.state.params.age}</Text>
           </View>
                         {/*GENDER*/}
           <View style={{ flexDirection: 'column'}}>
