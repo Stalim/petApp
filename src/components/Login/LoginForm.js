@@ -73,7 +73,7 @@ LogIn = (email, password) => {
 
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          placeholder="Passwordddddd"
           secureTextEntry
           placeholderTextColor='gray'
           returnKeyType="go"
