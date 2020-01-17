@@ -27,19 +27,34 @@ constructor(props){
     password:''
   };
 }
+
 LogIn = (email, password) => {
-    try {
+
+      var flag = 0;
+
       firebase
          .auth()
-         .signInWithEmailAndPassword(email, password)
-         .then(res => {
-             console.log(res.user.email);
+         .signInWithEmailAndPassword(email, password).catch(function(error) {
+      var errorCode = error.code;
+      var errorMessage = "Incorrect email, try again.";
+
+
+      if (errorCode === 'auth/wrong-password') {
+        flag = 1;
+        alert('Wrong password.');
+      } else {
+        flag = 1;
+        alert(errorMessage);
+      }
+      console.log(error);
+    }).then(() => {
+
+            if(flag === 0){
              AsyncStorage.setItem('isLoggedIn', '1');
-             this.props.navigation.navigate('Main');
+             this.props.navigation.navigate('Profile', {email: email});
+           }
       });
-} catch (err) {
-      console.error();
-    }
+
   };
 
 
@@ -50,6 +65,8 @@ LogIn = (email, password) => {
       <StatusBar barStyle="dark-content"/>
 
         <View style={styles.logoContainer}>
+
+
           <Image
           style={styles.logo}
           source={require('../../.././Images/paw_logo.jpg')}

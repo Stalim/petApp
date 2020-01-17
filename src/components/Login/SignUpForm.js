@@ -9,6 +9,8 @@ import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
 
 
+  var userId = 0;
+
   var config = {
     apiKey: "AIzaSyCICFM-viU7aEhZoTVAzjF_nTlKLL5gMYA",
     authDomain: "petapp-8e90b.firebaseapp.com",
@@ -23,6 +25,29 @@ import * as Permissions from 'expo-permissions';
       firebase.initializeApp(config);
   }
 
+  const breeds = [
+  {
+    label: 'Husky',
+    value: 'Huske',
+  },
+  {
+    label: 'Golden Retriever',
+    value: 'Golden Retriever',
+  },
+  {
+    label: 'Poodle',
+    value: 'Poodle',
+  },
+  {
+    label: 'German Sheperd',
+    value: 'German Sheperd',
+  },
+  {
+    label: 'Chihuahua',
+    value: 'Chihuahua',
+  },
+];
+
 export default class SignUpForm extends Component {
 constructor(props) {
  super(props);
@@ -33,31 +58,57 @@ constructor(props) {
    bio:"",
    age:"",
    image:null,
+   breed: undefined,
  };
+
+ firebase.database().ref("Users").on("value", function(snapshot) {
+   userId = snapshot.numChildren()
+})
+
 }
 
 SignUp = (email, password) => {
+
+  let selectedButton = this.stateOne.gender.find(e => e.selected == true);
+  selectedButton = selectedButton ? selectedButton.value : this.stateOne.gender[0].label;
+
+  firebase.database().ref('Users/' + userId).set({
+   email:this.state.email,
+    name: this.state.name,
+    breed: this.state.breed,
+    image: this.state.image,
+    gender: selectedButton,
+    bio: this.state.bio,
+    age: this.state.age
+
+  }).then(() => {
+    console.log('INSERTED!!!');
+    {/*this.incrementCount()*/}
+
+  }).catch((error) => {
+    console.log(error);
+  });
+
+
    try {
      firebase
          .auth()
          .createUserWithEmailAndPassword(email, password)
          .then(user => {
                 console.log(user);
-                this.props.navigation.navigate('Profile', { name: this.state.name,
-                                                            image: this.state.image,
-                                                            bio: this.state.bio,
-                                                            age: this.state.age});
           });
 } catch (error) {
      console.log(error.toString(error));
    }
+
+   this.props.navigation.navigate('Profile', {email: email} );
+
  };
 
   stateOne = {
        gender: [
            {
                label: 'Male',
-
            },
            {
                label: 'Female',
@@ -67,25 +118,21 @@ SignUp = (email, password) => {
        type: [
            {
                label: 'Dog ',
-
            },
            {
                label: 'Cat',
            },
        ],
-
-
    };
 
    // update state
    onPress = gender => this.setState({ gender });
    onPress = type => this.setState({ type });
 
+
   render() {
     let { image } = this.state;
 
-    let selectedButton = this.stateOne.gender.find(e => e.selected == true);
-    selectedButton = selectedButton ? selectedButton.value : this.stateOne.gender[0].label;
 
     let selectedButton_1 = this.stateOne.type.find(e => e.selected == true);
     selectedButton_1 = selectedButton_1 ? selectedButton_1.value : this.stateOne.type[0].label;
@@ -154,29 +201,21 @@ SignUp = (email, password) => {
 
 
         <View style={styles.container_breed}>
-          <Text style={styles.valueText_type} >
-            Breed
-          </Text>
-          <View style={styles.container_breed_picker}>
-            <RNPickerSelect
+          <View style={styles.scrollContainer} contentContainerStyle={styles.scrollContentContainer}>
+            <View  style={{flexDirection: 'row', alignItems:'center',}}>
+              <Text style={styles.valueText_type_name}>Breed</Text>
+              <RNPickerSelect
               placeholder={{
               label: 'Select Animal Breed',
               value: null,
               color: 'red',
               }}
-              placeholderTextColor='gray'
-              fontStyle='italic'
-              onValueChange={(value) => console.log(value)}
-              items={[
-                  { label: 'Labrador retriever', value: 'Labrador retriever' },
-                  { label: 'German shepherd', value: 'German shepherd' },
-                  { label: 'Golden retriever ', value: 'Golden retriever' },
-                  { label: 'French bulldog', value: 'French bulldog' },
-                  { label: 'Beagle', value: 'Beagle' },
-                  { label: 'Poodle', value: 'Poodle' },
-                  { label: 'Sato', value: 'Sato' },
-              ]}
-            />
+              items={breeds}
+              onValueChange={value => {this.setState({breed: value,});}}
+              style={pickerSelectStyles}
+              value={this.state.breed}
+              />
+            </View>
           </View>
         </View>
 
@@ -239,7 +278,6 @@ SignUp = (email, password) => {
   }
   componentDidMount() {
   this.getPermissionAsync();
-  console.log('hi');
 }
 
 getPermissionAsync = async () => {
@@ -276,6 +314,14 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems:'center',
     marginTop:'5%'
+  },
+  scrollContainer: {
+    flex: 1,
+
+  },
+  scrollContentContainer: {
+    paddingTop: 40,
+    paddingBottom: 10,
   },
   container_breed: {
     flexDirection:'row'
@@ -356,4 +402,31 @@ const styles = StyleSheet.create({
 
     },
 
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    width:200,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+   // to ensure the text is never behind the icon
+  },
+  inputAndroid: {
+    backgroundColor:'yellow',
+    fontSize: 16,
+    width:200,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'purple',
+    borderRadius: 2,
+    color: 'black',
+    paddingRight: 30, // to ensure the text is never behind the icon
+
+  },
 });

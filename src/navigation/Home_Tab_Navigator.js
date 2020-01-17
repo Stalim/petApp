@@ -50,6 +50,7 @@ const Home_Tab_Navigator = createBottomTabNavigator({
       showLabel: false
     }
   }
+
 );
 
 

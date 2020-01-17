@@ -5,10 +5,14 @@ import {StyleSheet, Text, View, Button, ActivityIndicator, StatusBar, AsyncStora
 import Login_SignUp_Navigator from './Login_SignUp_Navigator';
 import Home_Tab_Navigator from './Home_Tab_Navigator';
 
-class AuthLoadingScreen extends Component {
+{/*class AuthLoadingScreen extends Component {
   constructor(props){
     super(props);
     this._loadData();
+    this.state = {
+      isLoaded:false,
+      email:"Lola",
+  };
   }
   render(){
     return(
@@ -21,18 +25,20 @@ class AuthLoadingScreen extends Component {
 
   _loadData = async() => {
     const isLoggedIn = await AsyncStorage.getItem('isLoggedIn');
-    this.props.navigation.navigate(isLoggedIn !== '1' ? 'Login' : 'Main' );
+    this.props.navigation.navigate((isLoggedIn !== '1' ? 'Login' : 'Profile'), {email: this.state.email });
+
+
   }
-}
+}*/}
 
 export default createAppContainer(
   createSwitchNavigator({
-    AuthLoading: AuthLoadingScreen,
+    /*AuthLoading: AuthLoadingScreen,*/
     Login: Login_SignUp_Navigator,
     Main: Home_Tab_Navigator
   },
   {
-    initialRouteName: 'AuthLoading',
+    initialRouteName: 'Login',
   }
 ));
 

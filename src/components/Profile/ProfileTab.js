@@ -2,8 +2,56 @@ import React, { Component } from 'react';
 import { View, Image, StyleSheet, Text, SafeAreaView, ScrollView  } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import Constants from 'expo-constants';
+import * as firebase from "firebase";
+
+
+ var userId = 0;
 
 export default class ProfileTab extends Component {
+  constructor(props) {
+   super(props);
+   this.state = {
+     email: this.props.navigation.state.params.email,
+     name:"",
+     gender:undefined,
+     bio:"",
+     age:"",
+     breed: undefined,
+   };
+
+   firebase.database().ref("Users").on("value", function(snapshot) {
+     userId = snapshot.numChildren()
+  })
+
+  }
+
+  componentDidMount(){
+
+  const idk = firebase.database().ref('Users/').on('value', (snapshot) => {
+      let data = snapshot.val();
+      let items = Object.values(data);
+      var count = 0;
+
+
+  while(count < userId){
+    if(items[count].email ===   this.state.email){
+        console.log("this is gender" +  items[count].gender)
+        this.setState({
+          name:items[count].name,
+          gender:items[count].gender,
+          bio:items[count].bio,
+          age:items[count].age,
+          breed:items[count].breed,
+        })
+        break;
+    }
+    count++;
+  }
+  });
+
+}
+
+
   render() {
     return (
 
@@ -11,14 +59,14 @@ export default class ProfileTab extends Component {
 
         {/*Profile picture, Name, and Bio View Compartment*/}
         <View style={{flex:1,  backgroundColor: 'white', width:'100%' }}>
-          <View style={{flexDirection:'row', justifyContent:'space-around'}}>
+          <View style={{flexDirection:'row'}}>
                             {/*PROFILE PICTURE*/}
-            <Image source={{ uri: this.props.navigation.state.params.image }} style={{ width: 90, height: 90, borderRadius:25, marginTop: 36, marginLeft:10 }} />
+            <Image style={styles.logo} source={require('../../.././Images/cat.gif')}/>
             <View style={{flexDirection:'column', marginTop: 40, justifyContent:'space-around', width:'69%'}}>
                               {/*NAME*/}
-              <Text style={{fontSize: 28, textDecorationLine:'underline'}}>{this.props.navigation.state.params.name}</Text>
+              <Text style={{fontSize: 28, textDecorationLine:'underline'}}>{this.state.name}</Text>
                               {/*BIO*/}
-              <Text>{this.props.navigation.state.params.bio}</Text>
+              <Text>{this.state.bio} </Text>
             </View>
           </View>
         </View>
@@ -29,17 +77,17 @@ export default class ProfileTab extends Component {
                         {/*AGE*/}
           <View style={{ flexDirection: 'column'}}>
             <Text style={{fontSize: 18}}>Age</Text>
-            <Text style={{textAlign:'center'}}>{this.props.navigation.state.params.age}</Text>
+            <Text style={{textAlign:'center'}}>{this.state.age}</Text>
           </View>
                         {/*GENDER*/}
           <View style={{ flexDirection: 'column'}}>
             <Text style={{fontSize: 18}}>Gender</Text>
-            <Text style={{textAlign:'center'}}>Male</Text>
+            <Text style={{textAlign:'center'}}>{this.state.gender}</Text>
           </View>
                         {/*BREED*/}
           <View style={{ flexDirection: 'column'}}>
             <Text style={{fontSize: 18}}>Breed</Text>
-            <Text style={{textAlign:'center'}}>Siames</Text>
+            <Text style={{textAlign:'center'}}>{this.state.breed}</Text>
           </View>
                       {/*FRIENDS*/}
           <View style={{ flexDirection: 'column'}}>
@@ -64,63 +112,7 @@ export default class ProfileTab extends Component {
             <Image style={styles.logo} source={require('../../.././Images/source.gif')}/>
           </View>
 
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
 
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
-
-          <View style={{borderWidth:1, marginTop:20, borderRadius:10}}>
-            <Image style={styles.logo} source={require('../../.././Images/lolo.gif')}/>
-          </View>
 
         </View>
         </ScrollView >
